@@ -98,8 +98,6 @@ class AuthWrapper extends StatelessWidget {
     } else {
       return RegisterScreen(); // User is not logged in
     }
-   // //  return UploadImage();
-   //  return DummyTest();
 
   }
 }
