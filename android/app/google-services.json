@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "852266961214",
+    "project_id": "sales-notes",
+    "storage_bucket": "sales-notes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852266961214:android:2c50137b524c7a9e13046f",
+        "android_client_info": {
+          "package_name": "com.arjunsinh.salesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "852266961214-31207a3bcdrjofvfqmvgfnqa8h3hcaad.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.arjunsinh.salesapp",
+            "certificate_hash": "d7a9b9f25d31d58d1069cfd40d7f2491fc291223"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpT0kX5aYl-2AyCIgs26sZ8MNM-PZkedM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
