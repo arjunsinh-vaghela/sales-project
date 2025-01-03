@@ -32,7 +32,6 @@ jobs:
   release:
     name: Push to Releases
     runs-on: ubuntu-latest
-    needs: build_ios  # Ensure iOS build completes first
     steps:
       - name: Push to Releases
         uses: ncipollo/release-action@v1
