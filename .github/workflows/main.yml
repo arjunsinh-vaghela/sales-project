@@ -28,29 +28,6 @@ jobs:
 
       - run: flutter build apk --release --split-per-abi
 
-  build_ios:
-    name: Build iOS
-    runs-on: macos-latest
-    needs: build_android  # Ensure Android build completes first
-    steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          architecture: x64
-
-      - run: |
-          export CODE_SIGN_IDENTITY=""
-          export CODE_SIGNING_REQUIRED=NO
-          flutter build ios
-
-      - run: |
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload
 
   release:
     name: Push to Releases
