@@ -130,7 +130,7 @@ class _SalesScreenState extends State<SalesScreen> {
                               },//_onSearchChanged,
                               decoration: InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: "Search Bar For Customer Name..."),
+                                  hintText: "Search Bar For Customer OR Item Name..."),
                             ),
                           ),
                       ),
@@ -175,6 +175,7 @@ class _SalesScreenState extends State<SalesScreen> {
                     final String formattedDate = DateFormat('dd-MM-yyyy').format(timestamp);
                         String date = formattedDate;
                         String title = record['Customer Name'];
+                    String searchItemName = record['Item Name'];
                     if (providerState.search.isEmpty && providerState.selectedDate == null) {
                       return CustomeSalesCard(
                           context: context,
@@ -184,9 +185,9 @@ class _SalesScreenState extends State<SalesScreen> {
                           index: index,
                           providerState: providerState
                       );
-                    } else if (title
+                    } else if ((title
                         .toLowerCase()
-                        .contains(providerState.search.toLowerCase()) &&
+                        .contains(providerState.search.toLowerCase()) || searchItemName.toLowerCase().contains(providerState.search.toLowerCase())) &&
                         providerState.selectedDate == null) {
                       return CustomeSalesCard(
                           context: context,
@@ -197,9 +198,9 @@ class _SalesScreenState extends State<SalesScreen> {
                           providerState: providerState
                       );
                     } else if (providerState.selectedDate != null &&
-                        title
+                        (title
                             .toLowerCase()
-                            .contains(providerState.search.toLowerCase()) &&
+                            .contains(providerState.search.toLowerCase()) || searchItemName.toLowerCase().contains(providerState.search.toLowerCase())) &&
                         date.contains(DateFormat('dd-MM-yyyy')
                             .format(providerState.selectedDate!))) {
                       return CustomeSalesCard(
