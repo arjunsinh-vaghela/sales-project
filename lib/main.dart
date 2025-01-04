@@ -91,7 +91,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     // Check if a user is logged in
     final User? user = FirebaseAuth.instance.currentUser;
-
+ /// check
    // Navigate based on user authentication status
     if (user != null) {
       return BottomNavigationScreen(); // User is logged in
