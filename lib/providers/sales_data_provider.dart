@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'profile_data_provider.dart';
+
 class SalesDataProvider extends ChangeNotifier {
 
   List<Map<String, dynamic>> salesRecordList = [];
@@ -186,8 +188,88 @@ class SalesDataProvider extends ChangeNotifier {
     try {
       String userId = _auth.currentUser!.uid; // Get current user ID
       String docId = salesRecordList[index]['id']; // Fetch document ID
+      // String prvItemQuantity = salesRecordList[index]['id']['Item Quantity'].toString().replaceAll(RegExp(r'[^0-9]'),'') ?? '';
+      // int prvItemQuantityInt = int.parse(prvItemQuantity);
+      print('value is ====== ${salesRecordList[index]['Item Quantity']}');
+      String prvItemQuantity = salesRecordList[index]['Item Quantity'].toString();
+      String numericPart = prvItemQuantity.replaceAll(RegExp(r'[^0-9]'), '');
+      int prvItemQuantityInt = int.parse(numericPart);
+
+      // String uniqueId1 = salesRecordList[index]['uniqueId']; // Get the unique ID of sell
       // Update to current timestamp
       updatedData['timestamp'] = Timestamp.now(); // Set to current timestamp
+      //**********************************8
+      String itemName = updatedData['Item Name'];
+      // String itemPrice = updatedData['Item Amount'];
+      String quantityToSell = updatedData['Item Quantity'].toString().replaceAll(RegExp(r'[^0-9]'),'') ?? '';
+      // Extract non-numeric part
+      String stringPart = updatedData['Item Quantity'].toString().replaceAll(RegExp(r'[0-9]'), '') ?? '';
+      int ourQuantityToSell = int.parse(quantityToSell);
+      ourQuantityToSell =    ourQuantityToSell -  prvItemQuantityInt;
+
+      // Check if the item exists in stock
+      QuerySnapshot stockSnapshot = await FirebaseFirestore.instance
+          .collection('shopOwners')
+          .doc(userId)
+          .collection('stockData')
+          .where('Item Name', isEqualTo: itemName)
+          .limit(1)
+          .get();
+
+
+      if (stockSnapshot.docs.isEmpty) {
+        // Item not found in stock
+        Fluttertoast.showToast(
+          msg: "Invalid item: $itemName not found in stock.",
+          backgroundColor: Colors.red,
+          gravity: ToastGravity.TOP,
+          fontSize: 20,
+          textColor: Colors.white,
+          timeInSecForIosWeb: 2,
+          toastLength: Toast.LENGTH_SHORT,
+        );
+        return;
+      }
+
+      // Get the stock data
+      Map<String, dynamic> stockData = stockSnapshot.docs.first.data() as Map<String, dynamic>;
+      String currentStock = stockData['Item Stock'].toString().replaceAll(RegExp(r'[^0-9]'),'') ?? '';  // Default to 0 if null
+      String tempQuntityType = stockData['Item Stock'].toString().replaceAll(RegExp(r'[0-9]'), '') ?? '';
+      int ourCurrentStock = int.parse(currentStock);
+      print('currentStock ***************=>  $ourCurrentStock');
+      print('quantityToSell ***************=>  $ourQuantityToSell');
+      print('quantityTypeSales ***************=>  $stringPart');
+      print('quantityTypeStock ***************=>  $tempQuntityType');
+      bool check = ourQuantityToSell > ourCurrentStock;
+      print('check boll************* > $check');
+      bool check2 = tempQuntityType != stringPart;
+      print('check2 boll************* > $check2');
+      String uniqueId = stockData['uniqueId'].toString();
+
+      // Check if the quantity to sell is valid
+      if ((ourQuantityToSell > ourCurrentStock) || (tempQuntityType != stringPart)) {
+        print('========== go to if statement ========================');
+        // Not enough stock
+        Fluttertoast.showToast(
+          msg: "Invalid quantity:  for $itemName.",
+          backgroundColor: Colors.red,
+          gravity: ToastGravity.TOP,
+          fontSize: 20,
+          textColor: Colors.white,
+          timeInSecForIosWeb: 2,
+          toastLength: Toast.LENGTH_SHORT,
+        );
+        return;
+      }
+
+      // Update stock quantity
+      int updatedStock = ourCurrentStock - ourQuantityToSell;
+      String updatedStringCombo =  updatedStock.toString() + stringPart;
+
+
+      // **************************8888
+
+          // {'Item Stock': updatedStringCombo}
       // Update Firestore document
       await _firestore
           .collection('shopOwners')
@@ -196,11 +278,20 @@ class SalesDataProvider extends ChangeNotifier {
           .doc(docId)
           .update(updatedData);
 
+
       // Update the local list (retain the document ID)
       salesRecordList[index] = {
         ...updatedData,
         'id': docId, // Keep the document ID intact
       };
+
+      ProfileDataProvider profiledataprovider = ProfileDataProvider();
+      // Update corresponding stock data using unique ID
+      bool? isUpdate;
+      isUpdate =  await profiledataprovider.updateStockRecordByUniqueId(uniqueId,isSalesData: true, {
+        'Item Stock': updatedStringCombo,
+        'Item Name': updatedData['Item Name'], // Ensure Item Name is included
+      });
       notifyListeners();
     } catch (e) {
       print("Error updating sales record: $e");
@@ -212,6 +303,31 @@ class SalesDataProvider extends ChangeNotifier {
     try{
       String userId = _auth.currentUser!.uid; // Get current user ID
       String docId = salesRecordList[index]['id']; // Fetch document ID
+      String itemName =salesRecordList[index]['Item Name'];
+      String ItemQuantity = salesRecordList[index]['Item Quantity'].toString();
+      String numericPart = ItemQuantity.replaceAll(RegExp(r'[^0-9]'), '');
+      int prvItemQuantityInt = int.parse(numericPart);
+      String uniqueId = salesRecordList[index].toString();
+
+      // Check if the item exists in stock
+      QuerySnapshot stockSnapshot = await FirebaseFirestore.instance
+          .collection('shopOwners')
+          .doc(userId)
+          .collection('stockData')
+          .where('Item Name', isEqualTo: itemName)
+          .limit(1)
+          .get();
+
+
+      // Get the stock data
+      Map<String, dynamic> stockData = stockSnapshot.docs.first.data() as Map<String, dynamic>;
+      String currentStock = stockData['Item Stock'].toString().replaceAll(RegExp(r'[^0-9]'),'') ?? '';  // Default to 0 if null
+      String tempQuntityType = stockData['Item Stock'].toString().replaceAll(RegExp(r'[0-9]'), '') ?? '';
+      int ourCurrentStock = int.parse(currentStock);
+      ourCurrentStock = ourCurrentStock + prvItemQuantityInt;
+      // String quantityType = '$ourCurrentStock $tempQuntityType';
+      String updatedStringCombo =  ourCurrentStock.toString() + tempQuntityType;
+
       // Delete the document from Firestore
       await _firestore
           .collection('shopOwners')
@@ -222,6 +338,14 @@ class SalesDataProvider extends ChangeNotifier {
 
       // Remove the record from the local list
       salesRecordList.removeAt(index);
+      print('----- updatedStringCombo');
+
+      ProfileDataProvider profiledataprovider = ProfileDataProvider();
+      // Update corresponding stock data using unique ID
+      bool? isUpdate;
+      isUpdate =  await profiledataprovider.updateStockRecordByUniqueId(uniqueId,isSalesData: true, {
+        'Item Stock': updatedStringCombo,
+      });
       notifyListeners();
     } catch (e) {
       print("Error deleting sales record: $e");

@@ -251,7 +251,7 @@ class ProfileDataProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> updateStockRecordByUniqueId(String uniqueId, Map<String, dynamic> updatedData) async {
+  Future<bool?> updateStockRecordByUniqueId(String uniqueId, Map<String, dynamic> updatedData,{bool isSalesData = false}) async {
     try {
       String userId = _auth.currentUser !.uid;
 
