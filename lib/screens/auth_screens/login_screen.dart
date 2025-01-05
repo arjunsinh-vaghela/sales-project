@@ -27,92 +27,142 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Login'),
+        title: Text('Login', style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Form(
-            key: _formKey,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 120,),
-                Text('Login', style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
-                SizedBox(height: 40,),
-                UiHelper.CustomTextFormField(
-                  controller: emailController,
-                  hintText: "Enter Email",
-                  suffixIcon: Icon(Icons.email),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email cannot be empty";
-                    }
-                    // Regex for email validation
-                    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                    if (!RegExp(emailPattern).hasMatch(value)) {
-                      return "Enter a valid email address";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 20,),
-                Consumer<PasswordfieldTogaalProvider>(
-                  builder: (context, passwordProvider, child) {
-                    return UiHelper.CustomTextFormField(
-                      controller: passController,
-                      hintText: "Enter Password",
-                      isHide: passwordProvider.isHide,// Provider-controlled visibility
-                      isPassword: true,
-                      // obscureText: passwordProvider.isHide,
-                      suffixIcon: passwordProvider.isHide
-                          ?  Icon(Icons.visibility_off)
-                          : Icon(Icons.visibility), // Change icon dynamically
-                      onSuffixIconPressed: () {
-                        passwordProvider.toToggal(); // Toggle visibility
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return "Password cannot be empty";
-                        }
-                        if (value.length < 3) {
-                          return "Password must be at least 3 characters";
-                        }
-                        return null;
-                      },
-                    );
-                  },
-                ),
-                SizedBox(height: 20,),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: 600
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 120,),
+                      // Text('Login', style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold),),
+                      // SizedBox(height: 40,),
+                      UiHelper.CustomTextFormField(
+                        controller: emailController,
+                        hintText: "Enter Email",
+                        suffixIcon: Icon(Icons.email),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Email cannot be empty";
+                          }
+                          // Regex for email validation
+                          String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                          if (!RegExp(emailPattern).hasMatch(value)) {
+                            return "Enter a valid email address";
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 20,),
+                      Consumer<PasswordfieldTogaalProvider>(
+                        builder: (context, passwordProvider, child) {
+                          return UiHelper.CustomTextFormField(
+                            controller: passController,
+                            hintText: "Enter Password",
+                            isHide: passwordProvider.isHide,// Provider-controlled visibility
+                            isPassword: true,
+                            // obscureText: passwordProvider.isHide,
+                            suffixIcon: passwordProvider.isHide
+                                ?  Icon(Icons.visibility_off)
+                                : Icon(Icons.visibility), // Change icon dynamically
+                            onSuffixIconPressed: () {
+                              passwordProvider.toToggal(); // Toggle visibility
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Password cannot be empty";
+                              }
+                              if (value.length < 3) {
+                                return "Password must be at least 3 characters";
+                              }
+                              return null;
+                            },
+                          );
+                        },
+                      ),
+                      SizedBox(height: 20,),
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxWidth: 700
+                            maxWidth: 600
                         ),
-                        child: InkWell(
-                          child: Text('Forgot Password?',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,    // ResponsiveFontSize.getFontSize(12, 9, 5),
-                            ),),
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
-                          },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: 700
+                              ),
+                              child: InkWell(
+                                child: Text('Forgot Password?',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,    // ResponsiveFontSize.getFontSize(12, 9, 5),
+                                  ),),
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
+                                },
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 10,),
-                    ],
+                      // SizedBox(height: 50,),
+                      // UiHelper.CustomeElevetedButton(
+                      //   text: "Login",
+                      //   onPressed: () async {
+                      //     if(_formKey.currentState?.validate() ?? false){
+                      //       await _signInUser();
+                      //       // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigationScreen(),));
+                      //     }
+                      //   },
+                      //   fontWeight: FontWeight.bold,
+                      //   // fontSize: 18.sp,
+                      //   textColor: Colors.white,
+                      //   buttonColor: Colors.blue,
+                      // ),
+                      // SizedBox(height: 30,),
+                      // InkWell(
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.center,
+                      //     children: [
+                      //       Text(
+                      //         "Don't have an account? ",
+                      //         style: TextStyle(
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 18,// ResponsiveFontSize.getFontSize(13, 9, 5),
+                      //         ),
+                      //       ),
+                      //       Text('Sign Up',
+                      //         style: TextStyle(
+                      //             fontWeight: FontWeight.bold,
+                      //             fontSize: 18, //ResponsiveFontSize.getFontSize(13, 9, 5),
+                      //             color: Colors.cyan
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen(),));
+                      //   },
+                      // ),
+
+                  ],
                   ),
                 ),
-                SizedBox(height: 50,),
+                SizedBox(
+                  height: 35.h,
+                ),
                 UiHelper.CustomeElevetedButton(
                   text: "Login",
                   onPressed: () async {
@@ -126,33 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   textColor: Colors.white,
                   buttonColor: Colors.blue,
                 ),
-                SizedBox(height: 30,),
-                InkWell(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account? ",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,// ResponsiveFontSize.getFontSize(13, 9, 5),
-                        ),
-                      ),
-                      Text('Sign Up',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18, //ResponsiveFontSize.getFontSize(13, 9, 5),
-                            color: Colors.cyan
-                        ),
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => RegisterScreen(),));
-                  },
-                ),
-
-            ],
+              ],
             ),
           ),
         ),

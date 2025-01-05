@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sales_project/screens/auth_screens/login_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../common_widgets/add_sales_bottom_sheet.dart';
@@ -475,7 +476,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => RegisterScreen(),
+          // builder: (context) => RegisterScreen(),
+          builder: (context) => LoginScreen(),
         ),
             (Route<dynamic> route) => false,
       );

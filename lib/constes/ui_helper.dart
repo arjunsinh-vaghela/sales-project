@@ -39,7 +39,7 @@ class UiHelper{
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(buttonColor),
-        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 11.r, horizontal: 50.r)),
+        padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 13.r, horizontal: 50.r)),
         shape: MaterialStateProperty.all(RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(15.r)),
         )),

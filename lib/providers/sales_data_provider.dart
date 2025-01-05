@@ -62,30 +62,10 @@ class SalesDataProvider extends ChangeNotifier {
     }
   }
 
-  // Future<void> addSalesData(Map<String, dynamic> salesData) async {
-  //   try {
-  //     String userId = _auth.currentUser!.uid;
-  //     salesData['timestamp'] = Timestamp.now(); // Always store as Timestamp
-  //     DocumentReference docRef = await _firestore
-  //         .collection('shopOwners')
-  //         .doc(userId)
-  //         .collection('salesData')
-  //         .add(salesData);
-  //
-  //     salesRecordList.add({
-  //       ...salesData,
-  //       'id': docRef.id,
-  //       // 'timestamp': Timestamp.now().toDate(), // Store as DateTime locally
-  //     });
-  //     notifyListeners();
-  //   } catch (e) {
-  //     print("Error adding sales data: $e");
-  //   }
-  // }
 
 
 // Inside SalesDataProvider class
-  Future<void> addSalesData(Map<String, dynamic> salesData) async {
+  Future<bool> addSalesData(Map<String, dynamic> salesData) async {
     try {
       print('start ******************');
       String userId = _auth.currentUser !.uid;
@@ -117,7 +97,7 @@ class SalesDataProvider extends ChangeNotifier {
           timeInSecForIosWeb: 2,
           toastLength: Toast.LENGTH_SHORT,
         );
-        return;
+        return false;
       }
 
       // Get the stock data
@@ -148,7 +128,7 @@ class SalesDataProvider extends ChangeNotifier {
           timeInSecForIosWeb: 2,
           toastLength: Toast.LENGTH_SHORT,
         );
-        return;
+        return false;
       }
 
       // If valid, proceed to add sales data
@@ -177,14 +157,16 @@ class SalesDataProvider extends ChangeNotifier {
         'id': docRef.id,
       });
       notifyListeners();
+      return true; // Return true on success
     } catch (e) {
       print("Error adding sales data: $e");
+      return false; // Return false on error
     }
   }
 
 
   // // Update an existing sales record in Firestore
-  Future<void> updateSalesRecord(int index, Map<String, dynamic> updatedData) async {
+  Future<bool> updateSalesRecord(int index, Map<String, dynamic> updatedData) async {
     try {
       String userId = _auth.currentUser!.uid; // Get current user ID
       String docId = salesRecordList[index]['id']; // Fetch document ID
@@ -228,7 +210,7 @@ class SalesDataProvider extends ChangeNotifier {
           timeInSecForIosWeb: 2,
           toastLength: Toast.LENGTH_SHORT,
         );
-        return;
+        return false;
       }
 
       // Get the stock data
@@ -259,7 +241,7 @@ class SalesDataProvider extends ChangeNotifier {
           timeInSecForIosWeb: 2,
           toastLength: Toast.LENGTH_SHORT,
         );
-        return;
+        return false;
       }
 
       // Update stock quantity
@@ -287,19 +269,21 @@ class SalesDataProvider extends ChangeNotifier {
 
       ProfileDataProvider profiledataprovider = ProfileDataProvider();
       // Update corresponding stock data using unique ID
-      bool? isUpdate;
-      isUpdate =  await profiledataprovider.updateStockRecordByUniqueId(uniqueId,isSalesData: true, {
+      // bool? isUpdate;
+      await profiledataprovider.updateStockRecordByUniqueId(uniqueId, {
         'Item Stock': updatedStringCombo,
         'Item Name': updatedData['Item Name'], // Ensure Item Name is included
       });
       notifyListeners();
+      return true;
     } catch (e) {
       print("Error updating sales record: $e");
+      return false;
     }
   }
 
-  // Delete data
-  Future<void> deleteSalesRecord(int index) async{
+  // Delete data deleteSalesRecord
+  Future<bool> deleteSalesRecord(int index) async{
     try{
       String userId = _auth.currentUser!.uid; // Get current user ID
       String docId = salesRecordList[index]['id']; // Fetch document ID
@@ -307,7 +291,8 @@ class SalesDataProvider extends ChangeNotifier {
       String ItemQuantity = salesRecordList[index]['Item Quantity'].toString();
       String numericPart = ItemQuantity.replaceAll(RegExp(r'[^0-9]'), '');
       int prvItemQuantityInt = int.parse(numericPart);
-      String uniqueId = salesRecordList[index].toString();
+      // String uniqueId = salesRecordList[index].toString();
+      String uniqueId = salesRecordList[index]['uniqueId'].toString(); // Extract the correct unique ID
 
       // Check if the item exists in stock
       QuerySnapshot stockSnapshot = await FirebaseFirestore.instance
@@ -338,21 +323,24 @@ class SalesDataProvider extends ChangeNotifier {
 
       // Remove the record from the local list
       salesRecordList.removeAt(index);
-      print('----- updatedStringCombo');
+      print('----- updatedStringCombo $updatedStringCombo');
+      print('----- unique id of sales $uniqueId');
 
       ProfileDataProvider profiledataprovider = ProfileDataProvider();
       // Update corresponding stock data using unique ID
-      bool? isUpdate;
-      isUpdate =  await profiledataprovider.updateStockRecordByUniqueId(uniqueId,isSalesData: true, {
+      await profiledataprovider.updateStockRecordByUniqueId(uniqueId, {
         'Item Stock': updatedStringCombo,
       });
       notifyListeners();
+      return true;
     } catch (e) {
+      return false;
       print("Error deleting sales record: $e");
     }
   }
 
 }
+
 /// 1234567
 // import 'package:flutter/material.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';

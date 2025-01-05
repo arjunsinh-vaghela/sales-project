@@ -768,7 +768,9 @@ class AddSalesBottomSheet extends StatelessWidget {
                               'Tax Type': taxTypeProvider.selectedTaxType,
                             });
                           }
-                          Navigator.pop(context);
+                          if (isPurchase!){
+                            Navigator.pop(context);
+                          }
                         }
                       },
                       child: Text(
