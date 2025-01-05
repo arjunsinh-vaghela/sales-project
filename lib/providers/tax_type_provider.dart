@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TaxTypeProvider with ChangeNotifier {
   String _selectedTaxType = 'Amount'; // Default value
-  String _selectedItemType = 'COUNT'; // Default value
+  String _selectedItemType = 'UNIT'; // Default value
 
   String get selectedTaxType => _selectedTaxType;
   String get selectedItemType => _selectedItemType;

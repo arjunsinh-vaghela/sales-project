@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../common_widgets/add_sales_bottom_sheet.dart';
 import '../providers/sales_data_provider.dart';
+import '../providers/show_loder_provider.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({super.key});
@@ -43,6 +45,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
   void _showBottomSheet({bool isEditing = false, int? editingIndex}) {
     final providerState = Provider.of<SalesDataProvider>(context, listen: false);
+    final showLoader = Provider.of<ShowLoaderProvider>(context, listen: false);
     if (isEditing && editingIndex != null) {
       final record = providerState.salesRecordList[editingIndex];
       nameController.text = record['Customer Name'] ?? '';
@@ -78,6 +81,7 @@ class _SalesScreenState extends State<SalesScreen> {
           isPurchase: false,
           onAdd: (data) async {
             bool success;
+            showLoader.setLoading(true);
             if (isEditing && editingIndex != null) {
               success = await providerState.updateSalesRecord(editingIndex, data);
             } else {
@@ -91,6 +95,7 @@ class _SalesScreenState extends State<SalesScreen> {
                 SnackBar(content: Text('Operation failed. Please try again.')),
               );
             }
+            showLoader.setLoading(false);
           },
         );
       },
@@ -128,49 +133,110 @@ class _SalesScreenState extends State<SalesScreen> {
                 children: [
                   Row(
                     children: [
-                      Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: TextFormField(
-                              controller: searchController,
-                              onChanged: (value) {
-                                String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
-                                providerState.updateSearch(val);
-                              },//_onSearchChanged,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: "Search Bar For Customer OR Item Name..."),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: TextFormField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              String val = value.trim().replaceAll(RegExp(r'\s+'), ' ');
+                              providerState.updateSearch(val);
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Search by Item or Customer Name",
+                              prefixIcon: Icon(Icons.search, color: Colors.grey),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             ),
                           ),
+                        ),
                       ),
                       Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                          child: SizedBox(
-                            width: 100,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                final DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate:providerState.selectedDate, // _selectedDate,
-                                  firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
-                                  lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
-                                );
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: OutlinedButton.icon(
+                          onPressed: () async {
+                            final DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: providerState.selectedDate ?? DateTime.now(),
+                              firstDate: DateTime(2023),
+                              lastDate: DateTime.now(),
+                            );
 
-                                if (providerState.selectedDate != null &&
-                                    providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
-                                  // If the same date is selected again, unselect it
-                                  providerState.updateSelectedDate(null);
-                                } else {
-                                  // Otherwise, select the new date
-                                  providerState.updateSelectedDate(pickedDate);
-                                }
-                              },
-                              child: Text("Date"),
+                            if (pickedDate != null &&
+                                providerState.selectedDate != null &&
+                                providerState.selectedDate!.isAtSameMomentAs(pickedDate)) {
+                              providerState.updateSelectedDate(null);
+                            } else {
+                              providerState.updateSelectedDate(pickedDate);
+                            }
+                          },
+                          icon: Icon(Icons.calendar_today, size: 18, color: Colors.blue),
+                          label: Text(
+                            providerState.selectedDate != null
+                                ? "${providerState.selectedDate!.day}/${providerState.selectedDate!.month}/${providerState.selectedDate!.year}"
+                                : "Select Date",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: Colors.blue),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                         ),
+                        ),
+                      ),
                     ],
                   ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(horizontal: 20),
+                  //           child: TextFormField(
+                  //             controller: searchController,
+                  //             onChanged: (value) {
+                  //               String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
+                  //               providerState.updateSearch(val);
+                  //             },//_onSearchChanged,
+                  //             decoration: InputDecoration(
+                  //                 border: OutlineInputBorder(),
+                  //                 hintText: "Search By Customer Or Item Name"),
+                  //           ),
+                  //         ),
+                  //     ),
+                  //     Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  //         child: SizedBox(
+                  //           width: 100,
+                  //           child: ElevatedButton(
+                  //             onPressed: () async {
+                  //               final DateTime? pickedDate = await showDatePicker(
+                  //                 context: context,
+                  //                 initialDate:providerState.selectedDate, // _selectedDate,
+                  //                 firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
+                  //                 lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
+                  //               );
+                  //
+                  //               if (providerState.selectedDate != null &&
+                  //                   providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
+                  //                 // If the same date is selected again, unselect it
+                  //                 providerState.updateSelectedDate(null);
+                  //               } else {
+                  //                 // Otherwise, select the new date
+                  //                 providerState.updateSelectedDate(pickedDate);
+                  //               }
+                  //             },
+                  //             child: Text("Date"),
+                  //           ),
+                  //         ),
+                  //        ),
+                  //   ],
+                  // ),
                   Expanded(
                     child: ListView.builder(
                               itemCount: providerState.salesRecordList.length,
@@ -256,7 +322,7 @@ class _SalesScreenState extends State<SalesScreen> {
           children: [
             Row(
               children: [
-                Text('Customer Name:'),
+                Text('Customer Name :'),
                 SizedBox(width: 2.w),
                 Expanded(
                   child: Column(
@@ -296,7 +362,7 @@ class _SalesScreenState extends State<SalesScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Item :'),
+                Text('Item Name :'),
                 SizedBox(width: 2.w),
                 Text('${record['Item Name']} ,',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -305,9 +371,9 @@ class _SalesScreenState extends State<SalesScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Item Price :'),
+                Text('Item Unit Price :'),
                 SizedBox(width: 2.w),
-                Text('${record['Item Amount']} ,',
+                Text('${record['Item Amount']} ₹,',
                     style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.bold)),
@@ -325,18 +391,18 @@ class _SalesScreenState extends State<SalesScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Items Tax :'),
+                Text('Tax :'),
                 SizedBox(width: 2.w),
-                Text(tax,//'${record['Tax']} ,'
+                Text('$tax ₹',//'${record['Tax']} ,'
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Total Amount:'),
+                Text('Total :'),
                 SizedBox(width: 2.w),
-                Text('${record['Total']} ,',
+                Text('${record['Total']} ₹,',
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
@@ -353,14 +419,24 @@ class _SalesScreenState extends State<SalesScreen> {
               // providerState.deleteSalesRecord(index);
               bool success = await providerState.deleteSalesRecord(index);
               if (success) {
-                // Optionally show a success message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Record deleted successfully.')),
+                Fluttertoast.showToast(
+                  msg: 'Record deleted successfully.',
+                  backgroundColor: Colors.green,
+                  gravity: ToastGravity.TOP,
+                  fontSize: 20,
+                  textColor: Colors.white,
+                  timeInSecForIosWeb: 2,
+                  toastLength: Toast.LENGTH_SHORT,
                 );
               } else {
-                // Optionally show an error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to delete record.')),
+                Fluttertoast.showToast(
+                  msg: 'Failed to delete record.',
+                  backgroundColor: Colors.red,
+                  gravity: ToastGravity.TOP,
+                  fontSize: 20,
+                  textColor: Colors.white,
+                  timeInSecForIosWeb: 2,
+                  toastLength: Toast.LENGTH_SHORT,
                 );
               }
             }

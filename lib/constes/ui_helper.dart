@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
+import 'package:sales_project/providers/show_loder_provider.dart';
 
 import 'responsive_font_size.dart';
 
@@ -36,6 +37,7 @@ class UiHelper{
     String? fontFamily,
     Color? buttonColor = Colors.cyan, // Default button color
   }) {
+    ShowLoaderProvider showLoader = ShowLoaderProvider();
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(buttonColor),
@@ -45,7 +47,14 @@ class UiHelper{
         )),
       ),
       onPressed: onPressed, // Use the onPressed passed by the caller
-      child: Text(
+      child: showLoader.showOurLoader ? SizedBox(
+        height: 20,
+        width: 20,
+        child: Padding(
+          padding:  EdgeInsets.all(2),
+          child: CircularProgressIndicator(),
+        ),
+      ) : Text(
         text,
         style: TextStyle(
           color: textColor,

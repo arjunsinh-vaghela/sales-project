@@ -123,49 +123,110 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
                 children: [
                   Row(
                     children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: TextFormField(
-                            controller: searchController,
-                            onChanged: (value) {
-                              String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
-                              providerState.updateSearch(val);
-                            },//_onSearchChanged,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: "Search Bar For Supplier OR Item Name..."),
+                      Flexible(
+                          child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: TextFormField(
+                                controller: searchController,
+                                onChanged: (value) {
+                                  String val = value.trim().replaceAll(RegExp(r'\s+'), ' ');
+                                  providerState.updateSearch(val);
+                                },
+                                decoration: InputDecoration(
+                                  hintText: "Search By Item or Supplier Name",
+                                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                ),
+                              ),
                           ),
-                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        child: SizedBox(
-                          width: 100,
-                          child: ElevatedButton(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: OutlinedButton.icon(
                             onPressed: () async {
                               final DateTime? pickedDate = await showDatePicker(
                                 context: context,
-                                initialDate:providerState.selectedDate, // _selectedDate,
-                                firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
-                                lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
+                                initialDate: providerState.selectedDate ?? DateTime.now(),
+                                firstDate: DateTime(2023),
+                                lastDate: DateTime.now(),
                               );
 
-                              if (providerState.selectedDate != null &&
-                                  providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
-                                // If the same date is selected again, unselect it
+                              if (pickedDate != null &&
+                                  providerState.selectedDate != null &&
+                                  providerState.selectedDate!.isAtSameMomentAs(pickedDate)) {
                                 providerState.updateSelectedDate(null);
                               } else {
-                                // Otherwise, select the new date
                                 providerState.updateSelectedDate(pickedDate);
                               }
                             },
-                            child: Text("Date"),
+                            icon: Icon(Icons.calendar_today, size: 18, color: Colors.blue),
+                            label: Text(
+                              providerState.selectedDate != null
+                                  ? "${providerState.selectedDate!.day}/${providerState.selectedDate!.month}/${providerState.selectedDate!.year}"
+                                  : "Select Date",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: Colors.blue),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ),
                       ),
                     ],
                   ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 20),
+                  //         child: TextFormField(
+                  //           controller: searchController,
+                  //           onChanged: (value) {
+                  //             String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
+                  //             providerState.updateSearch(val);
+                  //           },//_onSearchChanged,
+                  //           decoration: InputDecoration(
+                  //               border: OutlineInputBorder(),
+                  //               hintText: "Search By Item or Supplier Name"),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  //       child: SizedBox(
+                  //         width: 100,
+                  //         child: ElevatedButton(
+                  //           onPressed: () async {
+                  //             final DateTime? pickedDate = await showDatePicker(
+                  //               context: context,
+                  //               initialDate:providerState.selectedDate, // _selectedDate,
+                  //               firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
+                  //               lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
+                  //             );
+                  //
+                  //             if (providerState.selectedDate != null &&
+                  //                 providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
+                  //               // If the same date is selected again, unselect it
+                  //               providerState.updateSelectedDate(null);
+                  //             } else {
+                  //               // Otherwise, select the new date
+                  //               providerState.updateSelectedDate(pickedDate);
+                  //             }
+                  //           },
+                  //           child: Text("Date"),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   Expanded(
                     child: ListView.builder(
                               itemCount: providerState.purchaseRecordList.length,
@@ -399,7 +460,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
           children: [
             Row(
               children: [
-                Text('Supplier Name:'),
+                Text('Supplier Name :'),
                 SizedBox(width: 2.w),
                 Expanded(
                   child: Column(
@@ -425,7 +486,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Date: '),
+                Text('Date :'),
                 SizedBox(width: 2.w),
                 Text(
                   formattedDate,
@@ -436,7 +497,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Item: '),
+                Text('Item Name :'),
                 SizedBox(width: 2.w),
                 Text(
                   '${record['Item Name']}',
@@ -447,10 +508,10 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Item Price: '),
+                Text('Item Unit Price :'),
                 SizedBox(width: 2.w),
                 Text(
-                  '${record['Item Price']}',
+                  '${record['Item Price']} ₹',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
@@ -458,7 +519,7 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Item Quantity: '),
+                Text('Item Quantity :'),
                 SizedBox(width: 2.w),
                 Text(
                   '${record['Item Quantity']}',
@@ -469,18 +530,18 @@ class _PurchaseScreenState extends State<PurchaseScreen> {
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Items Tax :'),
+                Text('Tax :'),
                 SizedBox(width: 2.w),
-                Text(tax,//'${record['Tax']} ,'
+                Text('$tax ₹',//'${record['Tax']} ,'
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),
             SizedBox(height: 4.h),
             Row(
               children: [
-                Text('Total Amount:'),
+                Text('Total :'),
                 SizedBox(width: 2.w),
-                Text('${record['Total']} ,',
+                Text('${record['Total']} ₹,',
                     style: TextStyle(fontWeight: FontWeight.bold)),
               ],
             ),

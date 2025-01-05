@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../providers/show_loder_provider.dart';
 import '../providers/tax_type_provider.dart';
 import '../constes/responsive_font_size.dart';
 
@@ -46,6 +47,7 @@ class AddSalesBottomSheet extends StatelessWidget {
 
     // Access the TaxTypeProvider
     final taxTypeProvider = Provider.of<TaxTypeProvider>(context);
+    final showLoader = Provider.of<ShowLoaderProvider>(context);
 
     return ListView(
       shrinkWrap: true,
@@ -172,7 +174,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                           suffixIcon: Icon(Icons.currency_rupee),
                           label: Text(isProfile ?? false
                               ? "Item Stock*"
-                              : 'Item Price*'),
+                              : 'Item Unit Price*'),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(
@@ -215,13 +217,13 @@ class AddSalesBottomSheet extends StatelessWidget {
                         maxLength: 20,
                         decoration: InputDecoration(
                           suffixIcon: SizedBox(
-                            width: 200,
+                            width: 170,
                             child: DropdownButtonFormField<String>(
                               value: taxTypeProvider.selectedItemType,
                               items: [
                                 DropdownMenuItem(
-                                  value: 'COUNT',
-                                  child: Text('COUNT'),
+                                  value: 'UNIT',
+                                  child: Text('UNIT'),
                                 ),
                                 DropdownMenuItem(
                                   value: 'K.G.',
@@ -321,7 +323,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                           //     ? Text('%')
                           //     : Icon(Icons.currency_rupee),
                           suffixIcon: SizedBox(
-                            width: 200,
+                            width: 170,
                             child: DropdownButtonFormField<String>(
                               value: taxTypeProvider.selectedTaxType,
                               items: [
@@ -369,7 +371,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                               ),
                             ),
                           ),
-                          label: Text('Tax Amount*'),
+                          label: Text('Tax*'),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(
@@ -472,7 +474,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                         maxLength: 20,
                         decoration: InputDecoration(
                           suffixIcon: Icon(Icons.currency_rupee),
-                          label: Text('Item Price*'),
+                          label: Text('Item Unit Price*'),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(
@@ -500,13 +502,13 @@ class AddSalesBottomSheet extends StatelessWidget {
                         maxLength: 20,
                         decoration: InputDecoration(
                           suffixIcon: SizedBox(
-                            width: 200,
+                            width: 170,
                             child: DropdownButtonFormField<String>(
                               value: taxTypeProvider.selectedItemType,
                               items: [
                                 DropdownMenuItem(
-                                  value: 'COUNT',
-                                  child: Text('COUNT'),
+                                  value: 'UNIT',
+                                  child: Text('UNIT'),
                                 ),
                                 DropdownMenuItem(
                                   value: 'K.G.',
@@ -617,7 +619,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                           //     ? Text('%')
                           //     : Icon(Icons.currency_rupee),
                           suffixIcon: SizedBox(
-                            width: 200,
+                            width: 170,
                             child: DropdownButtonFormField<String>(
                               value: taxTypeProvider.selectedTaxType,
                               items: [
@@ -665,7 +667,7 @@ class AddSalesBottomSheet extends StatelessWidget {
                               ),
                             ),
                           ),
-                          label: Text('Tax Amount*'),
+                          label: Text('Tax*'),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15.r),
                             borderSide: BorderSide(
@@ -710,7 +712,7 @@ class AddSalesBottomSheet extends StatelessWidget {
 
                           // Determine tax value format
                           String formattedItemValue;
-                          if (taxTypeProvider.selectedTaxType != 'COUNT') {
+                          if (taxTypeProvider.selectedTaxType != 'UNIT') {
                             formattedItemValue = quantity.toString();
                           } else {
                             // Combine quantity and selected item type
@@ -773,7 +775,14 @@ class AddSalesBottomSheet extends StatelessWidget {
                           }
                         }
                       },
-                      child: Text(
+                      child: showLoader.showOurLoader ? SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: Padding(
+                          padding:  EdgeInsets.all(2),
+                          child: CircularProgressIndicator(),
+                        ),
+                      ) : Text(
                         isEditing ? 'Save Changes' : 'Add',
                         style: TextStyle(
                           fontSize: ResponsiveFontSize.getFontSize(16, 9, 7),

@@ -193,6 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             thickness: 1,
             color: Colors.grey,
           ),
+          SizedBox(height: 15,),
           Expanded(
             child: Stack(
               children: [
@@ -222,56 +223,117 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   )
                       : Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     //     crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Expanded(
+                              Flexible(
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 25,top: 18),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                   child: TextFormField(
                                     controller: searchController,
                                     onChanged: (value) {
-                                      String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
+                                      String val = value.trim().replaceAll(RegExp(r'\s+'), ' ');
                                       providerState.updateSearch(val);
-                                    },//_onSearchChanged,
+                                    },
                                     decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        hintText: "Search Bar For Item Name..."),
+                                      hintText: "Search By Item Name",
+                                      prefixIcon: Icon(Icons.search, color: Colors.grey),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12.0),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.grey[200],
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                    ),
                                   ),
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                                child: SizedBox(
-                                  width: 100,
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      final DateTime? pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate:providerState.selectedDate, // _selectedDate,
-                                        firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
-                                        lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
-                                      );
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: OutlinedButton.icon(
+                                  onPressed: () async {
+                                    final DateTime? pickedDate = await showDatePicker(
+                                      context: context,
+                                      initialDate: providerState.selectedDate ?? DateTime.now(),
+                                      firstDate: DateTime(2023),
+                                      lastDate: DateTime.now(),
+                                    );
 
-                                      if (providerState.selectedDate != null &&
-                                          providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
-                                        // If the same date is selected again, unselect it
-                                        providerState.updateSelectedDate(null);
-                                      } else {
-                                        // Otherwise, select the new date
-                                        providerState.updateSelectedDate(pickedDate);
-                                      }
-                                    },
-                                    child: Text("Date"),
+                                    if (pickedDate != null &&
+                                        providerState.selectedDate != null &&
+                                        providerState.selectedDate!.isAtSameMomentAs(pickedDate)) {
+                                      providerState.updateSelectedDate(null);
+                                    } else {
+                                      providerState.updateSelectedDate(pickedDate);
+                                    }
+                                  },
+                                  icon: Icon(Icons.calendar_today, size: 18, color: Colors.blue),
+                                  label: Text(
+                                    providerState.selectedDate != null
+                                        ? "${providerState.selectedDate!.day}/${providerState.selectedDate!.month}/${providerState.selectedDate!.year}"
+                                        : "Select Date",
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: BorderSide(color: Colors.blue),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
+                          // Row(
+                          //   crossAxisAlignment: CrossAxisAlignment.center,
+                          //   mainAxisAlignment: MainAxisAlignment.center,
+                          //   children: [
+                          //     Expanded(
+                          //       child: Padding(
+                          //         padding: const EdgeInsets.only(left: 25,top: 18),
+                          //         child: TextFormField(
+                          //           controller: searchController,
+                          //           onChanged: (value) {
+                          //             String val = value.trim().replaceAll(RegExp(r'\s+'),' ');
+                          //             providerState.updateSearch(val);
+                          //           },//_onSearchChanged,
+                          //           decoration: InputDecoration(
+                          //               border: OutlineInputBorder(),
+                          //               hintText: "Search By Item Name"),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Padding(
+                          //       padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                          //       child: SizedBox(
+                          //         width: 100,
+                          //         child: ElevatedButton(
+                          //           onPressed: () async {
+                          //             final DateTime? pickedDate = await showDatePicker(
+                          //               context: context,
+                          //               initialDate:providerState.selectedDate, // _selectedDate,
+                          //               firstDate: DateTime(2023), // Earliest selectable date: January 1, 2023
+                          //               lastDate:  DateTime.now(), // Latest selectable date: December 31, 2025
+                          //             );
+                          //
+                          //             if (providerState.selectedDate != null &&
+                          //                 providerState.selectedDate!.isAtSameMomentAs(pickedDate!)) {
+                          //               // If the same date is selected again, unselect it
+                          //               providerState.updateSelectedDate(null);
+                          //             } else {
+                          //               // Otherwise, select the new date
+                          //               providerState.updateSelectedDate(pickedDate);
+                          //             }
+                          //           },
+                          //           child: Text("Date"),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                           Expanded(
                             child: Padding(
                               padding: const EdgeInsets.all(15),

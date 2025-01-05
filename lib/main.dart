@@ -14,6 +14,7 @@ import 'providers/passwordfield_togaal_provider.dart';
 import 'providers/profile_data_provider.dart';
 import 'providers/purchase_data_provider.dart';
 import 'providers/sales_data_provider.dart';
+import 'providers/show_loder_provider.dart';
 import 'providers/tax_type_provider.dart';
 import 'screens/auth_screens/login_screen.dart';
 import 'screens/auth_screens/register_screen.dart';
@@ -48,6 +49,7 @@ Future<void> main() async {
         // ChangeNotifierProvider(create: (context) => BottomNavigationProvider()),
         ChangeNotifierProvider(create: (context) => SalesDataProvider()),
         ChangeNotifierProvider(create: (context) => PurchaseDataProvider()),
+        ChangeNotifierProvider(create: (context) => ShowLoaderProvider()),
         ChangeNotifierProvider(create: (context) => PasswordfieldTogaalProvider()),
         ChangeNotifierProvider(create: (context) => ProfileDataProvider()),
         ChangeNotifierProvider(create: (context) => TaxTypeProvider()),

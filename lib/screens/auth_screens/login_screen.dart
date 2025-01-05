@@ -7,6 +7,7 @@ import '../../constes/responsive_font_size.dart';
 import '../../constes/ui_helper.dart';
 import '../../providers/auth_provider/auth_provider.dart';
 import '../../providers/passwordfield_togaal_provider.dart';
+import '../../providers/show_loder_provider.dart';
 import '../bottom_navigation_screen.dart';
 import 'forgot_password_screen.dart';
 import 'register_screen.dart';
@@ -24,6 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    final showLoader = Provider.of<ShowLoaderProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -35,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Form(
@@ -90,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(height: 10,),
                       ConstrainedBox(
                         constraints: BoxConstraints(
                             maxWidth: 600
@@ -106,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Text('Forgot Password?',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 18,    // ResponsiveFontSize.getFontSize(12, 9, 5),
+                                      fontSize: 16,    // ResponsiveFontSize.getFontSize(12, 9, 5),
                                   ),),
                                 onTap: () {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPasswordScreen(),));
@@ -167,7 +169,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: "Login",
                   onPressed: () async {
                     if(_formKey.currentState?.validate() ?? false){
+                      showLoader.setLoading(true);
                       await _signInUser();
+                      showLoader.setLoading(false);
                       // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigationScreen(),));
                     }
                   },
