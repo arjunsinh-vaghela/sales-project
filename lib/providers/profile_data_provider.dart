@@ -251,7 +251,7 @@ class ProfileDataProvider extends ChangeNotifier{
     }
   }
 
-  Future<void> updateStockRecordByUniqueId(String uniqueId, Map<String, dynamic> updatedData) async {
+  Future<bool?> updateStockRecordByUniqueId(String uniqueId, Map<String, dynamic> updatedData) async {
     try {
       String userId = _auth.currentUser !.uid;
 
@@ -266,10 +266,9 @@ class ProfileDataProvider extends ChangeNotifier{
 
       if (snapshot.docs.isNotEmpty) {
         String docId = snapshot.docs.first.id;
-
         // Update to current timestamp
+        print('----- unique id of stock is matched +=');
         updatedData['timestamp'] = Timestamp.now();
-
         // Update the record in Firestore
         await _firestore
             .collection('shopOwners')

@@ -76,11 +76,20 @@ class _SalesScreenState extends State<SalesScreen> {
           formKey: _formKey,
           isEditing: isEditing,
           isPurchase: false,
-          onAdd: (data) {
+          onAdd: (data) async {
+            bool success;
             if (isEditing && editingIndex != null) {
-              providerState.updateSalesRecord(editingIndex, data);
+              success = await providerState.updateSalesRecord(editingIndex, data);
             } else {
-              providerState.addSalesData(data);
+              success = await providerState.addSalesData(data);
+            }
+            if (success) {
+              Navigator.pop(context); // Close the bottom sheet on success
+            } else {
+              // Optionally show an error message to the user
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Operation failed. Please try again.')),
+              );
             }
           },
         );
@@ -335,13 +344,25 @@ class _SalesScreenState extends State<SalesScreen> {
         ),
         trailing: PopupMenuButton<String>(
           icon: Icon(Icons.more_vert),
-          onSelected: (value) {
+          onSelected: (value) async {
             if (value == 'Edit') {
               _showBottomSheet(isEditing: true, editingIndex: index);
             } else if (value == 'View') {
               // Implement view functionality if needed
             } else if (value == 'Delete') {
-              providerState.deleteSalesRecord(index);
+              // providerState.deleteSalesRecord(index);
+              bool success = await providerState.deleteSalesRecord(index);
+              if (success) {
+                // Optionally show a success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Record deleted successfully.')),
+                );
+              } else {
+                // Optionally show an error message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to delete record.')),
+                );
+              }
             }
           },
           itemBuilder: (BuildContext context) =>

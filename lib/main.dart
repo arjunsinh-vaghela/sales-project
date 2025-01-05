@@ -15,6 +15,7 @@ import 'providers/profile_data_provider.dart';
 import 'providers/purchase_data_provider.dart';
 import 'providers/sales_data_provider.dart';
 import 'providers/tax_type_provider.dart';
+import 'screens/auth_screens/login_screen.dart';
 import 'screens/auth_screens/register_screen.dart';
 import 'screens/bottom_navigation_screen.dart';
 import 'firebase_options.dart';
@@ -91,12 +92,12 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     // Check if a user is logged in
     final User? user = FirebaseAuth.instance.currentUser;
- /// check
+
    // Navigate based on user authentication status
     if (user != null) {
       return BottomNavigationScreen(); // User is logged in
     } else {
-      return RegisterScreen(); // User is not logged in
+      return LoginScreen(); // User is not logged in
     }
    // //  return UploadImage();
    //  return DummyTest();
