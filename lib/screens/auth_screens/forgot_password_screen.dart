@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 import '../../constes/ui_helper.dart';
@@ -24,49 +25,48 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         centerTitle: true,
         title: Text('Forgot Password'),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                UiHelper.CustomTextFormField(
-                  controller: emailController,
-                  hintText: "Enter Email",
-                  suffixIcon: Icon(Icons.email),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Email cannot be empty";
-                    }
-                    // Regex for email validation
-                    String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
-                    if (!RegExp(emailPattern).hasMatch(value)) {
-                      return "Enter a valid email address";
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 40,),
-                UiHelper.CustomeElevetedButton(
-                  text: "Update Password",
-                  onPressed: () async {
-                    if(_formKey.currentState?.validate() ?? false){
-                      await _ForgotPassword();
-                      // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigationScreen(),));
-                    }
-                  },
-                  fontWeight: FontWeight.bold,
-                  // fontSize: 18.sp,
-                  textColor: Colors.white,
-                  buttonColor: Colors.blue,
-                  // onPressed: () {  },
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 150.h,),
+              UiHelper.CustomTextFormField(
+                controller: emailController,
+                hintText: "Enter Email",
+                suffixIcon: Icon(Icons.email),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Email cannot be empty";
+                  }
+                  // Regex for email validation
+                  String emailPattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$';
+                  if (!RegExp(emailPattern).hasMatch(value)) {
+                    return "Enter a valid email address";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 40,),
+              UiHelper.CustomeElevetedButton(
+                text: "Update Password",
+                onPressed: () async {
+                  if(_formKey.currentState?.validate() ?? false){
+                    await _ForgotPassword();
+                    // Navigator.push(context, MaterialPageRoute(builder: (context) => BottomNavigationScreen(),));
+                  }
+                },
+                fontWeight: FontWeight.bold,
+                // fontSize: 18.sp,
+                textColor: Colors.white,
+                buttonColor: Colors.blue,
+                // onPressed: () {  },
+              ),
 
-              ],
-            ),
+            ],
           ),
         ),
       ),
