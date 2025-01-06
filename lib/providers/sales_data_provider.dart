@@ -59,7 +59,9 @@ class SalesDataProvider extends ChangeNotifier {
       print("Error fetching sales data: $e");
     } finally {
       setLoading(false);
+      notifyListeners();
     }
+
   }
 
 
