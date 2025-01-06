@@ -73,7 +73,8 @@ class AddSalesBottomSheet extends StatelessWidget {
                         ? 'Edit Sales Data'
                         : 'Add Sales Data',
                 style: TextStyle(
-                    fontSize: ResponsiveFontSize.getFontSize(20, 11, 10),
+                  fontSize: 25,
+                    // fontSize: ResponsiveFontSize.getFontSize(20, 11, 10),
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 15.h),
@@ -785,10 +786,12 @@ class AddSalesBottomSheet extends StatelessWidget {
                       ) : Text(
                         isEditing ? 'Save Changes' : 'Add',
                         style: TextStyle(
-                          fontSize: ResponsiveFontSize.getFontSize(16, 9, 7),
+                          fontSize: 20
+                          // fontSize: ResponsiveFontSize.getFontSize(16, 9, 7),
                         ),
                       ),
                     ),
+                    SizedBox(height: 20,)
                   ],
                 ),
               ),
